@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import UnAuthRoutes from '../routes/unauth_routes';
 
 class GateKeeper extends Component {
 	render() {
     return (
-			<div>
+			<Fragment>
 				<UnAuthRoutes />
-			</div>
+			</Fragment>
 		);
 	}
 }
