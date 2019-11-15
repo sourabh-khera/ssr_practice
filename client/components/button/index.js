@@ -4,7 +4,7 @@ import './style.scss';
 const button = () => {
  return (
    <div>
-     <button className='default-button-style'>Login</button>
+     <button className='default-button-style'>Submit</button>
    </div>
  )
 };
