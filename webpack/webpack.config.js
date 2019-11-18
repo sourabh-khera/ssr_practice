@@ -2,13 +2,15 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin'); 
 const HtmlWebpackPlugin = require('html-webpack-plugin'); 
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); 
+const nodeExternals = require('webpack-node-externals');
 
 const clientConfig = {
   mode: 'development',
   entry: path.resolve('client'),
   output: {
-    filename: 'bundle.js',
     path: path.resolve('build'),
+    filename: 'bundle.js',
+    publicPath: '/',
   },
   module: { rules: [
     {
@@ -31,18 +33,48 @@ const clientConfig = {
   plugins: [
     new ExtractTextPlugin('styles.css'),
     new HtmlWebpackPlugin({
-      template: 'client/index.html',
+      template: '!!raw-loader!' + path.resolve('client', 'index.html'),
+      filename: path.resolve('server', 'views', 'index.ejs')
     }),
   ],
   optimization: {
 		minimizer: [new UglifyJsPlugin()],
-  },
-  devServer: {
-    hot: true,
-    port: 3000,
-    historyApiFallback: true,
-    publicPath: '/',
   }
 }
 
-module.exports = [clientConfig];
+const serverConfig = {
+  mode: 'development',
+  target: 'node',
+  externals: [nodeExternals()],
+  entry: path.resolve('server', 'server.js'),
+  output: {
+    path: path.resolve('build'),
+    filename: 'server_bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
+				test: /\.scss$/,
+				use: [{
+					loader: 'css-loader',
+					options: {
+						exportOnlyLocals: true,
+					}
+				}, 'sass-loader']
+      },
+       {
+        test: /\.(png|jpg|jpeg|gif|svg|woff)$/,
+        loader: 'file-loader',
+        options: {
+          emitFile: false,
+        }
+      },
+    ]
+  }
+}
+module.exports = [clientConfig, serverConfig];
