@@ -1,9 +1,15 @@
 import React , { Component } from 'react';
+import { connect } from 'react-redux';
 import TextInput from '../../components/text_input';
 import LoginButton from '../../components/button';
+import { fetchUsersList } from '../../actions/async_action';
 import './style.scss';
 
 class Login extends Component {
+
+  componentDidMount(){
+    const { fetchUsersList } = this.props;
+  }
   render() {
     return (
       <div className='login-container'>
@@ -21,5 +27,9 @@ class Login extends Component {
     );
   }
 }
+
+Login.need = {
+  fetchUsersList: (store) => store.dispatch(fetchUsersList()),
+};
 
 export default Login;
